@@ -51,9 +51,9 @@ const ShoppingRecipe: React.FC<ShoppingRecipeProps> = ({
         <>
           {ingredients.length > 0 ? (
             <div>
-              <ul>
+              <ul className="recipe-ingredients-list">
                 {ingredients.map((ingredient, index) => (
-                  <li key={index}>{ingredient}</li>
+                  <li className="recipe-ingredient" key={index}>{ingredient}</li>
                 ))}
               </ul>
               <button onClick={handleToggleEdit}>Modifier la liste</button>
