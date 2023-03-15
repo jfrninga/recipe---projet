@@ -1,34 +1,68 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import './App.css'
+import React, { useState } from 'react';
+import './App.css';
+import RecipeList from './components/RecipeList';
+import ShoppingRecipe from './components/ShoppingRecipe';
+import AddRecipe from './components/AddRecipe';
 
-function App() {
-  const [count, setCount] = useState(0)
+type Recipe = {
+  id: number;
+  name: string;
+  ingredients: string;
+  description: string;
+};
+
+const App = () => {
+  const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [shoppingList, setShoppingList] = useState<string[]>([]);
+
+  const handleAddRecipe = (recipe: Recipe) => {
+    setRecipes([...recipes, { id: Date.now(), ...recipe }]);
+  };
+
+  const handleDeleteRecipe = (id: number) => {
+    const updatedRecipes = recipes.filter((recipe) => recipe.id !== id);
+    setRecipes(updatedRecipes);
+  };
+
+  const handleEditRecipe = (id: number, updatedRecipe: Recipe) => {
+    const updatedRecipes = recipes.map((recipe) => {
+      if (recipe.id === id) {
+        return { ...recipe, ...updatedRecipe };
+      }
+      return recipe;
+    });
+    setRecipes(updatedRecipes);
+  };
+
+  const handleAddToShoppingRecipe = (ingredientsToAdd: string[]) => {
+    const newIngredients = shoppingList.concat(ingredientsToAdd);
+    setShoppingList(newIngredients);
+  };
+
+  const handleUpdateShoppingList = (newIngredients: string[]) => {
+    setShoppingList(newIngredients);
+  };
+
+  const handleClearShoppingList = () => {
+    setShoppingList([]);
+  };
 
   return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+    <div>
+      <RecipeList
+        recipes={recipes}
+        onDeleteRecipe={handleDeleteRecipe}
+        onEditRecipe={handleEditRecipe}
+        onAddToShoppingRecipe={handleAddToShoppingRecipe}
+      />
+      <ShoppingRecipe
+        ingredients={shoppingList}
+        onUpdateIngredients={handleUpdateShoppingList}
+        onDeleteIngredients={handleClearShoppingList}
+      />
+      <AddRecipe onAddRecipe={handleAddRecipe} />
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;
